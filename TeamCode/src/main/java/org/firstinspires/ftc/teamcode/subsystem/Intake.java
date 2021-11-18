@@ -10,7 +10,8 @@ public class Intake implements Subsystem{
 
     @Override
     public void init(HardwareMap hardwareMap) {
-
+        motor = hardwareMap.get(DcMotorEx.class, "intake");
+        pivot = hardwareMap.get(Servo.class,"pivot");
     }
 
     @Override
