@@ -17,5 +17,7 @@ apply from: '../build.dependencies.gradle'
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'org.ftclib.ftclib:core:1.2.1'
+    implementation 'org.openftc:easyopencv:1.5.1'
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }
