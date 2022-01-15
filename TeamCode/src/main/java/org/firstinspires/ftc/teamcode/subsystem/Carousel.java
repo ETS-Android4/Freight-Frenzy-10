@@ -1,39 +1,33 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Hardware;
 
-public class Carousel implements Subsystem {
+@Config
+public class Carousel {
 
     public static double SPEED = 1.0;
 
-    CRServo topRight, bottomRight, topLeft, bottomLeft;
+    CRServo right, left;
 
-    public Carousel() {
-
+    public Carousel(HardwareMap hardwareMap) {
+        right = hardwareMap.get(CRServo.class, "rightCarousel");
+        left = hardwareMap.get(CRServo.class, "leftCarousel");
     }
 
-    @Override
-    public void init(HardwareMap hardwareMap) {
-        topRight = hardwareMap.get(CRServo.class, "trCarousel");
-        bottomRight = hardwareMap.get(CRServo.class, "brCarousel");
-        topLeft = hardwareMap.get(CRServo.class, "tlCarousel");
-        bottomLeft = hardwareMap.get(CRServo.class, "blCarousel");
-    }
-
-    @Override
-    public void initNoReset(HardwareMap hardwareMap) {
-
-    }
-
-    @Override
     public void update() {
-
+        return;
     }
 
-    @Override
-    public Object subsystemState() {
-        return null;
+    public void setPower(double power) {
+        right.setPower(power);
+        left.setPower(-power);
     }
+
+    public void scoreDuck() {
+        setPower(SPEED);
+    }
+
 }
