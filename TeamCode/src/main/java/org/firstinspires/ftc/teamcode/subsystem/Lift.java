@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.util.InterpLUT;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -46,6 +47,8 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         upperMotor = hardwareMap.get(DcMotorEx.class, "upperLift");
         lowerMotor = hardwareMap.get(DcMotorEx.class, "lowerLift");
+        upperMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lowerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         upperMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         barrel = hardwareMap.get(Servo.class, "barrel");
@@ -68,7 +71,7 @@ public class Lift {
     public void update() {
         currentHeight = extensionLengthToHeight(encoderTicksToInches(getCurrentPosition()));
         double power = 0;
-        if(currentHeight < 3 && targetHeight < 3) {
+        if(currentHeight < 1 && targetHeight < 1) {
             power = -0.3;
             bottomOffset = upperMotor.getCurrentPosition();
         } else if(currentHeight < 0.4 && targetHeight < 0.4) {
@@ -100,6 +103,10 @@ public class Lift {
 
     public double getHeight() {
         return currentHeight = extensionLengthToHeight(encoderTicksToInches(getCurrentPosition()));
+    }
+
+    public double getTargetHeight() {
+        return targetHeight;
     }
 
     public int getCurrentPosition() {

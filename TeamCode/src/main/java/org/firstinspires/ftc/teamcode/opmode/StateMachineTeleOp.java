@@ -20,8 +20,8 @@ import org.firstinspires.ftc.teamcode.subsystem.Lift;
 public class StateMachineTeleOp extends LinearOpMode {
 
     //public static config variables!
-    public static double TOP_SCORE_HEIGHT = 17.5;
-    public static double MID_SCORE_HEIGHT = 9;
+    public static double TOP_SCORE_HEIGHT = 16;
+    public static double MID_SCORE_HEIGHT = 8.5;
     public static double LOW_SCORE_HEIGHT = 3;
     public static double SHARED_SCORE_HEIGHT = 3;
 
@@ -45,6 +45,7 @@ public class StateMachineTeleOp extends LinearOpMode {
         INTAKE_UP,
         SECOND_INTAKE,
         TRANSFERRING,
+        EXTEND_HORIZONTAL,
         SCORING,
         RETRACT_HORIZONTAL
     }
@@ -106,7 +107,18 @@ public class StateMachineTeleOp extends LinearOpMode {
                         timer.reset();
                         intake.retract();
                         intake.setPower(0);
+                        lift.setTargetHeight(2);
                         state = State.INTAKE_UP;
+                    }
+
+                    if(gamepadEx2.wasJustPressed(GamepadKeys.Button.B)) {
+                        state = State.IDLE;
+                        lift.retractHorizontal();
+                        intake.retract();
+                        intake.setPower(0);
+                        lift.setTargetHeight(0);
+                        lift.retractHorizontal();
+                        lift.retractBarrel();
                     }
 
                     //until current goes over 8
@@ -114,6 +126,7 @@ public class StateMachineTeleOp extends LinearOpMode {
                         timer.reset();
                         intake.retract();
                         intake.setPower(0);
+                        lift.setTargetHeight(2);
                         state = State.INTAKE_UP;
                     }
                     break;
@@ -123,6 +136,7 @@ public class StateMachineTeleOp extends LinearOpMode {
                         intake.setPower(-1);
                         lift.retractBarrel();
                         lift.retractHorizontal();
+                        lift.setTargetHeight(0);
                         intake.retract();
                         timer.reset();
                     }
@@ -135,39 +149,66 @@ public class StateMachineTeleOp extends LinearOpMode {
                         state = State.TRANSFERRING;
                         timer.reset();
                     }
+                    if (gamepadEx2.wasJustPressed(GamepadKeys.Button.B)) {
+                        timer.reset();
+                        intake.retract();
+                        intake.setPower(0);
+                        lift.setTargetHeight(2);
+                        state = State.INTAKE_UP;
+                    }
                     lift.retractHorizontal();
                     intake.setPower(-1);
                     intake.retract();
-                    if(timer.milliseconds() > 700){
-                        lift.barrelReady();
-                    }
+//                    if(timer.milliseconds() > 700){
+//                        lift.barrelReady();
+//                    }
                     break;
                 case TRANSFERRING:
                     if (gamepadEx2.wasJustPressed(GamepadKeys.Button.A)) {
-                        state = State.SCORING;
+                        state = State.EXTEND_HORIZONTAL;
+                        lift.extendHorizontal();
+                    }
+                    if(gamepadEx2.wasJustPressed(GamepadKeys.Button.B)) {
+                        state = State.SECOND_INTAKE;
+                        intake.setPower(-1);
+                        lift.retractBarrel();
+                        lift.retractHorizontal();
+                        lift.setTargetHeight(0);
+                        intake.retract();
+                        timer.reset();
                     }
                     intake.setPower(0);
                     switch(level){
                         case TOP:
                             lift.setTargetHeight(TOP_SCORE_HEIGHT);
-                            if(timer.milliseconds() > 500)
-                                lift.extendHorizontal();
+//                            if(timer.milliseconds() > 500)
+//                                lift.extendHorizontal();
                             break;
                         case MID:
                             lift.setTargetHeight(MID_SCORE_HEIGHT);
-                            if(timer.milliseconds() > 500)
-                                lift.extendHorizontal();
+
                             break;
                         case LOW:
                             lift.setTargetHeight(LOW_SCORE_HEIGHT);
-                            if(timer.milliseconds() > 300)
-                                lift.extendHorizontal();
+//                            if(timer.milliseconds() > 300)
+//                                lift.extendHorizontal();
                             break;
                         case SHARED:
                             lift.setTargetHeight(SHARED_SCORE_HEIGHT);
 //                                lift.extendHorizontal();
                             break;
                     }
+
+                    break;
+                case EXTEND_HORIZONTAL:
+                    if(gamepadEx2.wasJustPressed(GamepadKeys.Button.A)) {
+                        state = State.SCORING;
+                    }
+                    if(gamepadEx2.wasJustPressed(GamepadKeys.Button.B)) {
+                        state = State.TRANSFERRING;
+                        lift.retractHorizontal();
+                    }
+                    lift.extendHorizontal();
                     break;
                 case SCORING:
                     if(gamepadEx2.wasJustPressed(GamepadKeys.Button.A)) {
